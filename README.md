@@ -1,2 +1,5 @@
 # rol1
-rol1
+
+
+Male cviceni v pouziti jekylla. 
+
