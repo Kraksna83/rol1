@@ -14,3 +14,4 @@ cd rol1
 jekyll build
 ```
 
+v adresari _site se objevi kompletni stranky v HTML formátu ktere je mozne uploadnout na vas oblibeny webhosting. 
