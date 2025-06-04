@@ -15,4 +15,4 @@ JEKYLL_CMD = "/usr/bin/jekyll build"
 # Change this to a secure random string
 SECRET = "your-webhook-secret-key-here"
 
-print('Configuration loaded successfully.')
+#print('Configuration loaded successfully.')
