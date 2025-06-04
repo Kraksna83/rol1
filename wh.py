@@ -94,35 +94,36 @@ def main():
         print("Unauthorized: invalid secret.")
         sys.exit(1)
         # Pull latest changes
-        code, out, err = run("git pull", cwd=REPO_DIR)
-        if code != 0:
-            print("Git pull failed:\n", err)
-            sys.exit(1)
-        
-        # Check if changes were pulled
-        if "Already up to date" not in out:
-            # Get the email of the last commit author
-            code, author_email, err = run("git log -1 --pretty=format:%ae", cwd=REPO_DIR)
-            if code == 0 and author_email:
-                # Send notification email
-                # Prepare email content
-                subject = 'Site deployment notification'
-                commit_msg = run("git log -1 --pretty=format:%s", cwd=REPO_DIR)[1]
-                body = f'Your changes have been pulled and the site has been deployed.\n\nCommit message: {commit_msg}'
-                
-                # Use mail command to send email
-                mail_cmd = f"echo '{body}' | mail -s '{subject}' -r {config.EMAIL_FROM} {author_email}"
-                try:
-                    code, out, err = run(mail_cmd)
-                    if code == 0:
-                        print(f"Notification email sent to {author_email}")
-                    else:
-                        print(f"Failed to send email notification: {err}")
-                except Exception as e:
-                    print(f"Failed to send email notification: {str(e)}")
-        else:
-            print("No changes to deploy.")
-            sys.exit(0)
+    
+    code, out, err = run("git pull", cwd=REPO_DIR)
+    if code != 0:
+        print("Git pull failed:\n", err)
+        sys.exit(1)
+    
+    # Check if changes were pulled
+    if "Already up to date" not in out:
+        # Get the email of the last commit author
+        code, author_email, err = run("git log -1 --pretty=format:%ae", cwd=REPO_DIR)
+        if code == 0 and author_email:
+            # Send notification email
+            # Prepare email content
+            subject = 'Site deployment notification'
+            commit_msg = run("git log -1 --pretty=format:%s", cwd=REPO_DIR)[1]
+            body = f'Your changes have been pulled and the site has been deployed.\n\nCommit message: {commit_msg}'
+            
+            # Use mail command to send email
+            mail_cmd = f"echo '{body}' | mail -s '{subject}' -r {config.EMAIL_FROM} {author_email}"
+            try:
+                code, out, err = run(mail_cmd)
+                if code == 0:
+                    print(f"Notification email sent to {author_email}")
+                else:
+                    print(f"Failed to send email notification: {err}")
+            except Exception as e:
+                print(f"Failed to send email notification: {str(e)}")
+    else:
+        print("No changes to deploy.")
+        sys.exit(0)
     # Generate and save dokumenty.md file
     dokumenty_path = os.path.join(REPO_DIR, "dokumenty.md")
     docs_dir = os.path.join(REPO_DIR, "public/docs/")
