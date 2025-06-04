@@ -7,7 +7,7 @@ import subprocess
 # Configuration
 import importlib.util
 
-spec = importlib.util.spec_from_file_location("config", "/var/www/html/wh_receiver/test.py")
+spec = importlib.util.spec_from_file_location("config", "/var/www/html/wh_receiver/config.py")
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
