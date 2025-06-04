@@ -120,7 +120,9 @@ def main():
                         print(f"Failed to send email notification: {err}")
                 except Exception as e:
                     print(f"Failed to send email notification: {str(e)}")
-
+        else:
+            print("No changes to deploy.")
+            sys.exit(0)
     # Generate and save dokumenty.md file
     dokumenty_path = os.path.join(REPO_DIR, "dokumenty.md")
     docs_dir = os.path.join(REPO_DIR, "public/docs/")
