@@ -23,11 +23,11 @@ def generate_dokumenty_md(directory):
     """
     Scans the given directory for all files, extracting metadata when available,
     and generates a Markdown table listing the documents.
-    Files with pattern 'nameDD-MM-YY.ext' will have dates parsed,
+    Files with pattern 'nameDD_MM_YY.ext' will have dates parsed,
     while other files will have date omitted.
     Returns the generated markdown as a string.
     """
-    date_pattern = re.compile(r"(.+?)(\d{2}-\d{2}-\d{2})\.(docx?|pdf)$", re.IGNORECASE)
+    date_pattern = re.compile(r"(.+?)(\d{2}_\d{2}_\d{2})\.(docx?|pdf)$", re.IGNORECASE)
     ext_pattern = re.compile(r"(.+?)\.(docx?|pdf)$", re.IGNORECASE)
     rows = []
     
@@ -45,7 +45,9 @@ def generate_dokumenty_md(directory):
                 
                 # Try to parse the date string
                 try:
-                    date_obj = datetime.strptime(date_str, "%d-%m-%y")
+                    # Convert from DD_MM_YY to DD-MM-YY for datetime parsing
+                    date_parse_str = date_str.replace('_', '-')
+                    date_obj = datetime.strptime(date_parse_str, "%d-%m-%y")
                     date_fmt = date_obj.strftime("%Y-%m-%d")
                 except ValueError:
                     date_fmt = date_str  # Fallback if date parsing fails
