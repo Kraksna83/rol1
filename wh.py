@@ -62,6 +62,7 @@ def generate_dokumenty_md(directory):
                 
             # Get relative path for the link
             rel_path = os.path.relpath(os.path.join(root, fname), directory)
+            print (f"Processing file: {fname}, relative path: {rel_path}")
             link = f"[{fname}]({rel_path})"
             rows.append((date_fmt, name_part, ext, link))
 
