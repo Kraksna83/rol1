@@ -72,7 +72,7 @@ def generate_dokumenty_md(directory):
     rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
 
     # Generate the Markdown table as a string
-    markdown = "| Date | Name | Type | Download |\n"
+    markdown = "| Den | Co | Format | Odkaz |\n"
     markdown += "|------|------|------|----------|\n"
     for date_fmt, name_part, ext, link in rows:
         markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
