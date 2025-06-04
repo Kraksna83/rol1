@@ -9,7 +9,7 @@ REPO_DIR = "/home/tomas/rol1"
 WEB_DIR = "/var/www/html"
 
 # Jekyll build command
-JEKYLL_CMD = "bundle exec jekyll build"
+JEKYLL_CMD = "/usr/bin/jekyll build"
 
 # Secret key for webhook authentication
 # Change this to a secure random string

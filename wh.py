@@ -3,6 +3,8 @@
 import os
 import sys
 import subprocess
+import re
+from datetime import datetime
 
 # Configuration
 import importlib.util
@@ -15,6 +17,62 @@ REPO_DIR = config.REPO_DIR
 WEB_DIR = config.WEB_DIR
 JEKYLL_CMD = config.JEKYLL_CMD
 SECRET = config.SECRET
+
+
+def generate_dokumenty_md(directory):
+    """
+    Scans the given directory for all files, extracting metadata when available,
+    and generates a Markdown table listing the documents.
+    Files with pattern 'nameDD-MM-YY.ext' will have dates parsed,
+    while other files will have date omitted.
+    Returns the generated markdown as a string.
+    """
+    date_pattern = re.compile(r"(.+?)(\d{2}-\d{2}-\d{2})\.(docx?|pdf)$", re.IGNORECASE)
+    ext_pattern = re.compile(r"(.+?)\.(docx?|pdf)$", re.IGNORECASE)
+    rows = []
+    
+    # Walk through the directory and its subdirectories
+    for root, _, files in os.walk(directory):
+        for fname in files:
+            date_match = date_pattern.match(fname)
+            ext_match = ext_pattern.match(fname)
+            
+            if date_match:
+                # Extract name, date, and extension
+                name_part = date_match.group(1).replace('_', ' ').strip()
+                date_str = date_match.group(2)
+                ext = date_match.group(3).lower()
+                
+                # Try to parse the date string
+                try:
+                    date_obj = datetime.strptime(date_str, "%d-%m-%y")
+                    date_fmt = date_obj.strftime("%Y-%m-%d")
+                except ValueError:
+                    date_fmt = date_str  # Fallback if date parsing fails
+                
+            elif ext_match and ext_match.group(2).lower() in ['doc', 'docx', 'pdf']:
+                # Handle files without dates
+                name_part = ext_match.group(1).replace('_', ' ').strip()
+                ext = ext_match.group(2).lower()
+                date_fmt = ""  # Date omitted
+            else:
+                continue  # Skip files that don't match our criteria
+                
+            # Get relative path for the link
+            rel_path = os.path.relpath(os.path.join(root, fname), directory)
+            link = f"[{fname}]({rel_path})"
+            rows.append((date_fmt, name_part, ext, link))
+
+    # Sort rows by date descending (newest first), with empty dates at the beginning
+    rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
+
+    # Generate the Markdown table as a string
+    markdown = "| Date | Name | Type | Download |\n"
+    markdown += "|------|------|------|----------|\n"
+    for date_fmt, name_part, ext, link in rows:
+        markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
+    
+    return markdown
 
 def run(cmd, cwd=None):
     result = subprocess.run(cmd, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -36,6 +94,23 @@ def main():
     if code != 0:
         print("Git pull failed:\n", err)
         sys.exit(1)
+
+    # Generate and save dokumenty.md file
+    dokumenty_path = os.path.join(REPO_DIR, "dokumenty.md")
+    docs_dir = os.path.join(REPO_DIR, "public/docs/")
+
+    # Generate markdown table content
+    docs_markdown = generate_dokumenty_md(docs_dir)
+
+    # Create the full markdown content with header from config
+    with open(dokumenty_path, 'w') as f:
+        f.write(f"---\n")
+        f.write(f"layout: page\n")
+        f.write(f"title: Dokumenty\n")
+        f.write(f"---\n\n")
+        f.write(docs_markdown)
+
+    print(f"Generated dokumenty.md file")
 
     # Build Jekyll site
     code, out, err = run(JEKYLL_CMD, cwd=REPO_DIR)
