@@ -6,3 +6,5 @@ _site/
 .bundle/
 vendor/
 dokumenty.md
+.env
+_config.yml
