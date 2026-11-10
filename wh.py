@@ -187,8 +187,8 @@ def main():
             except Exception as e:
                 print(f"Failed to send email notification: {str(e)}")
     else:
-        print("No changes to deploy.")
-        sys.exit(0)
+        print("No repository changes; rebuilding and deploying the site.")
+
     if not build_site(repo_dir, jekyll_cmd):
         sys.exit(1)
 
