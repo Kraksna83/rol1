@@ -10,6 +10,8 @@ from pathlib import Path
 import smtplib
 from email.message import EmailMessage
 from dotenv import load_dotenv
+import hmac
+import hashlib
 
 
 def get_pdf_creation_date(filepath):
@@ -97,6 +99,34 @@ def required_env(name):
     return value
 
 
+def read_cgi_payload():
+    content_length = os.environ.get("CONTENT_LENGTH")
+    if content_length is None:
+        raise ValueError("Missing request content length.")
+
+    try:
+        length = int(content_length)
+    except ValueError as error:
+        raise ValueError("Invalid request content length.") from error
+
+    if length < 0:
+        raise ValueError("Invalid request content length.")
+
+    payload = sys.stdin.buffer.read(length)
+    if len(payload) != length:
+        raise ValueError("Incomplete request payload.")
+    return payload
+
+
+def verify_github_signature(secret, payload, signature):
+    digest = hmac.new(secret.encode("utf-8"), payload, hashlib.sha256).hexdigest()
+    expected_signature = f"sha256={digest}"
+    return hmac.compare_digest(
+        signature.encode("utf-8"),
+        expected_signature.encode("ascii"),
+    )
+
+
 def build_site(repo_dir, jekyll_cmd):
     dokumenty_path = os.path.join(repo_dir, "dokumenty.md")
     docs_dir = os.path.join(repo_dir, "public/docs/")
@@ -155,10 +185,17 @@ def main():
     if os.environ.get("REQUEST_METHOD") != "POST":
         print("Invalid request method.")
         sys.exit(1)
-    if os.environ.get("HTTP_X_SECRET") != secret:
+
+    signature = os.environ.get("HTTP_X_HUB_SIGNATURE_256", "")
+    try:
+        payload = read_cgi_payload()
+    except ValueError as error:
+        print(f"Invalid request payload: {error}")
+        sys.exit(1)
+
+    if not verify_github_signature(secret, payload, signature):
         print("Unauthorized: invalid secret.")
         sys.exit(1)
-        # Pull latest changes
     
     code, out, err = run("git pull", cwd=repo_dir)
     if code != 0:
