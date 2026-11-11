@@ -30,6 +30,10 @@ cp .env.example .env
 Na serveru nastavte v souboru `.env` hodnoty `REPO_DIR`, `WEB_DIR`,
 `JEKYLL_CMD`, `SECRET` a `EMAIL_FROM`. Pro `SECRET` použijte jedinečnou,
 bezpečně vygenerovanou hodnotu; soubor `.env` neukládejte do Gitu.
+Ověření webhooku používá hlavičku `X-Hub-Signature-256` (v CGI prostředí
+`HTTP_X_HUB_SIGNATURE_256`) a HMAC-SHA256 nad původním tělem požadavku.
+Proměnná `SECRET` musí odpovídat tajnému klíči nastavenému v konfiguraci
+GitHub webhooku.
 
 Lokální testovací sestavení můžete spustit z konzole:
 
