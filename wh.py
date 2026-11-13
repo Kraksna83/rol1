@@ -35,17 +35,18 @@ def get_pdf_creation_date(filepath):
         return ""
 
 
-def generate_dokumenty_md(directory):
+def generate_document_markdowns(directory):
     """
     Scans the given directory for all files, extracting metadata when available,
-    and generates a Markdown table listing the documents.
+    and generates Markdown tables for general documents and meeting records.
     Files with pattern 'nameDD_MM_YY.ext' will have dates parsed,
     while other files will have date omitted.
-    Returns the generated markdown as a string.
+    Returns the general and meeting-record markdown as a tuple.
     """
     date_pattern = re.compile(r"(.+?)(\d{2}_\d{2}_\d{2})\.(docx?|pdf)$", re.IGNORECASE)
     ext_pattern = re.compile(r"(.+?)\.(docx?|pdf)$", re.IGNORECASE)
-    rows = []
+    document_rows = []
+    meeting_rows = []
     
     # Walk through the directory and its subdirectories
     for root, _, files in os.walk(directory):
@@ -74,18 +75,22 @@ def generate_dokumenty_md(directory):
             rel_path = os.path.relpath(os.path.join(root, fname), directory)
             print (f"Processing file: {fname}, relative path: {rel_path}")
             link = f"[{fname}]({rel_path})"
-            rows.append((date_fmt, name_part, ext, link))
+            row = (date_fmt, name_part, ext, link)
+            if name_part.casefold().startswith(("zapis", "usneseni")):
+                meeting_rows.append(row)
+            else:
+                document_rows.append(row)
 
-    # Sort rows by date descending (newest first), with empty dates at the beginning
-    rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
+    def format_rows(rows):
+        rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
 
-    # Generate the Markdown table as a string
-    markdown = "| Den | Co | Format | Odkaz |\n"
-    markdown += "|------|------|------|----------|\n"
-    for date_fmt, name_part, ext, link in rows:
-        markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
+        markdown = "| Den | Co | Format | Odkaz |\n"
+        markdown += "|------|------|------|----------|\n"
+        for date_fmt, name_part, ext, link in rows:
+            markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
+        return markdown
     
-    return markdown
+    return format_rows(document_rows), format_rows(meeting_rows)
 
 def run(cmd, cwd=None):
     result = subprocess.run(cmd, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -129,9 +134,10 @@ def verify_github_signature(secret, payload, signature):
 
 def build_site(repo_dir, jekyll_cmd):
     dokumenty_path = os.path.join(repo_dir, "dokumenty.md")
+    meeting_records_path = os.path.join(repo_dir, "zapisy-a-usneseni.md")
     docs_dir = os.path.join(repo_dir, "public/docs/")
 
-    docs_markdown = generate_dokumenty_md(docs_dir)
+    docs_markdown, meeting_records_markdown = generate_document_markdowns(docs_dir)
 
     with open(dokumenty_path, 'w') as f:
         f.write("---\n")
@@ -140,7 +146,15 @@ def build_site(repo_dir, jekyll_cmd):
         f.write("---\n\n")
         f.write(docs_markdown)
 
+    with open(meeting_records_path, 'w') as f:
+        f.write("---\n")
+        f.write("layout: page\n")
+        f.write("title: Zápisy a usnesení\n")
+        f.write("---\n\n")
+        f.write(meeting_records_markdown)
+
     print("Generated dokumenty.md file")
+    print("Generated zapisy-a-usneseni.md file")
 
     code, out, err = run(jekyll_cmd, cwd=repo_dir)
     if code != 0:

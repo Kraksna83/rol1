@@ -41,5 +41,6 @@ Lokální testovací sestavení můžete spustit z konzole:
 python3 wh.py --dry-run
 ```
 
-Tento režim vygeneruje `dokumenty.md` a sestaví web do `_site`, ale neprovede
+Tento režim vygeneruje `dokumenty.md` a `zapisy-a-usneseni.md` a sestaví web
+do `_site`. Zápisy a usnesení se zobrazí na samostatné stránce. Režim neprovede
 `git pull`, neodešle e-mail ani nezkopíruje soubory do webového adresáře.
