@@ -9,7 +9,7 @@ permalink:        pretty
 # Setup
 title:            'Rolnická 1'
 tagline:          'Bytové družstvo'
-description:      'Beta verze stránek bytováho družstva'
+description:      'Beta verze stránek bytového družstva'
 url:              https://rolnicka1.cz
 baseurl:          https://rolnicka1.cz/
 plugins:          [jekyll-paginate]
