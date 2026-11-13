@@ -74,7 +74,7 @@ def generate_document_markdowns(directory):
                 
             # Get relative path for the link
             rel_path = os.path.relpath(os.path.join(root, fname), directory)
-            print (f"Processing file: {fname}, relative path: {rel_path}")
+            #print (f"Processing file: {fname}, relative path: {rel_path}")
             link = f"[{fname}]({rel_path})"
             row = (date_fmt, name_part, ext, link)
             if name_part.casefold().startswith(("zapis", "usneseni")):
