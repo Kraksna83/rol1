@@ -47,6 +47,7 @@ def generate_document_markdowns(directory):
     ext_pattern = re.compile(r"(.+?)\.(docx?|pdf)$", re.IGNORECASE)
     document_rows = []
     meeting_rows = []
+    linkbase = "/public/docs/"
     
     # Walk through the directory and its subdirectories
     for root, _, files in os.walk(directory):
@@ -135,7 +136,7 @@ def verify_github_signature(secret, payload, signature):
 def build_site(repo_dir, jekyll_cmd):
     dokumenty_path = os.path.join(repo_dir, "dokumenty.md")
     meeting_records_path = os.path.join(repo_dir, "zapisy-a-usneseni.md")
-    docs_dir = os.path.join(repo_dir, "public/docs/")
+    docs_dir = os.path.join("public/docs/")
 
     docs_markdown, meeting_records_markdown = generate_document_markdowns(docs_dir)
 
