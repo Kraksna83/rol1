@@ -241,24 +241,30 @@ def main():
     else:
         print("No repository changes; rebuilding and deploying the site.")
 
+    #zkus build
     if not build_site(repo_dir, jekyll_cmd):
         sys.exit(1)
 
-    # Remove old site files
+    # pokud to proslo, oddelej stare soubory
     code, out, err = run(f"rm -rf {web_dir}/*")
     if code != 0:
         print("Failed to clean web dir:\n", err)
         sys.exit(1)
 
+    #a udelej to znova, kdyz sis to smazal
+    if not build_site(repo_dir, jekyll_cmd):
+        sys.exit(1)
+
+
     print (f"web_dir: {web_dir}, repo_dir: {os.path.join(repo_dir, '_site')}")
-    #if web_dir != os.path.join(repo_dir, "_site"):
-    #    # Copy new site files
-    #    code, out, err = run(f"cp -r {repo_dir}/_site/* {web_dir}/")
-    #    if code != 0:
-    #        print("Failed to copy site:\n", err)
-    #        sys.exit(1)
-    #else:
-    #    print("Web directory is the same as the site directory; no need to copy files.")
+    if web_dir != os.path.join(repo_dir, "_site"):
+        # Copy new site files
+        code, out, err = run(f"cp -r {repo_dir}/_site/* {web_dir}/")
+        if code != 0:
+            print("Failed to copy site:\n", err)
+            sys.exit(1)
+    else:
+        print("Web directory is the same as the site directory; no need to copy files.")
 
     print("Deployment successful.")
 
