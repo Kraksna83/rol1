@@ -257,8 +257,8 @@ def main():
     #    if code != 0:
     #        print("Failed to copy site:\n", err)
     #        sys.exit(1)
-    else:
-        print("Web directory is the same as the site directory; no need to copy files.")
+    #else:
+    #    print("Web directory is the same as the site directory; no need to copy files.")
 
     print("Deployment successful.")
 
