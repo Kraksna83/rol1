@@ -254,8 +254,8 @@ def main():
         # Copy new site files
         code, out, err = run(f"cp -r {repo_dir}/_site/* {web_dir}/")
         if code != 0:
-        print("Failed to copy site:\n", err)
-        sys.exit(1)
+            print("Failed to copy site:\n", err)
+            sys.exit(1)
     else:
         print("Web directory is the same as the site directory; no need to copy files.")
 
