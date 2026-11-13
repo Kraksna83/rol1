@@ -73,7 +73,7 @@ def generate_document_markdowns(directory):
                     date_fmt = date_str
                 
             # Get relative path for the link
-            rel_path = os.path.relpath(os.path.join(root, fname), directory)
+            rel_path = linkbase + fname
             #print (f"Processing file: {fname}, relative path: {rel_path}")
             link = f"[{fname}]({rel_path})"
             row = (date_fmt, name_part, ext, link)
