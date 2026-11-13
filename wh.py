@@ -250,11 +250,14 @@ def main():
         print("Failed to clean web dir:\n", err)
         sys.exit(1)
 
-    # Copy new site files
-    code, out, err = run(f"cp -r {repo_dir}/_site/* {web_dir}/")
-    if code != 0:
+    if web_dir != os.path.join(repo_dir, "_site"):
+        # Copy new site files
+        code, out, err = run(f"cp -r {repo_dir}/_site/* {web_dir}/")
+        if code != 0:
         print("Failed to copy site:\n", err)
         sys.exit(1)
+    else:
+        print("Web directory is the same as the site directory; no need to copy files.")
 
     print("Deployment successful.")
 
