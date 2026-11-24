@@ -85,7 +85,7 @@ def generate_document_markdowns(directory):
     def format_rows(rows, den=True):
         rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
 
-        markdown = "| Den | Co | Format | Odkaz |\n" if den else "| Co | Format | Odkaz |\n"
+        markdown = "| Den | Co | Formát | Odkaz |\n" if den else "| Co | Formát | Odkaz |\n"
         if den:
             markdown += "|------|------|------|----------|\n"
             for date_fmt, name_part, ext, link in rows:
