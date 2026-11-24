@@ -82,16 +82,21 @@ def generate_document_markdowns(directory):
             else:
                 document_rows.append(row)
 
-    def format_rows(rows):
+    def format_rows(rows, den=True):
         rows.sort(key=lambda x: ("0" if not x[0] else "1") + x[0], reverse=True)
 
-        markdown = "| Den | Co | Format | Odkaz |\n"
-        markdown += "|------|------|------|----------|\n"
-        for date_fmt, name_part, ext, link in rows:
-            markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
+        markdown = "| Den | Co | Format | Odkaz |\n" if den else "| Co | Format | Odkaz |\n"
+        if den:
+            markdown += "|------|------|------|----------|\n"
+            for date_fmt, name_part, ext, link in rows:
+                markdown += f"| {date_fmt} | {name_part} | {ext} | {link} |\n"
+        else:
+            markdown += "|------|------|----------|\n"
+            for _, name_part, ext, link in rows:
+                markdown += f"| {name_part} | {ext} | {link} |\n"
         return markdown
     
-    return format_rows(document_rows), format_rows(meeting_rows)
+    return format_rows(document_rows, den=False), format_rows(meeting_rows)
 
 def run(cmd, cwd=None):
     result = subprocess.run(cmd, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
