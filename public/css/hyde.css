@@ -267,10 +267,21 @@ a.sidebar-nav-item:focus {
 
 @media (min-width: 48em) {
   .sidebar {
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+  }
+
+  .sidebar > img {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-width: 100%;
+    max-height: none;
+    object-fit: contain;
   }
 
   .sidebar-sticky {
     position: static;
+    flex: 0 0 auto;
   }
 }
