@@ -27,5 +27,5 @@ Havárie a opravy topení, vody a elektřiny
 
 ## Kontakty družstva
 
-- Web: [bd-rolnicka1.wz.cz](http://www.bd-rolnicka1.wz.cz)
+- Web: [rolnicka1.cz](https://rolnicka1.cz)
 - E-mail: [bd-rolnicka1@seznam.cz](mailto:bd-rolnicka1@seznam.cz)
