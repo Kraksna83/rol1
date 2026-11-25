@@ -248,8 +248,10 @@ a.sidebar-nav-item:focus {
 
 .sidebar > img {
   display: block;
+  width: auto;
   max-width: 100%;
-  height: auto;
+  max-height: 20vh;
+  object-fit: contain;
   margin: 0 auto 1rem;
 }
 
@@ -260,5 +262,15 @@ a.sidebar-nav-item:focus {
     max-width: 100%;
     width: auto;
     margin: 0 auto;
+  }
+}
+
+@media (min-width: 48em) {
+  .sidebar {
+    overflow-y: auto;
+  }
+
+  .sidebar-sticky {
+    position: static;
   }
 }
