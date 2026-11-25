@@ -107,10 +107,7 @@ a.sidebar-nav-item:focus {
 
 @media (min-width: 48em) {
   .sidebar-sticky {
-    position: absolute;
-    right:  1rem;
-    bottom: 1rem;
-    left:   1rem;
+    position: static;
   }
 }
 
@@ -247,6 +244,13 @@ a.sidebar-nav-item:focus {
 .theme-base-0f .content a,
 .theme-base-0f .related-posts li a:hover {
   color: #8f5536;
+}
+
+.sidebar > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1rem;
 }
 
 @media (max-width: 47.99em) {
